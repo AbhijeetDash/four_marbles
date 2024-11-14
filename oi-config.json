@@ -1,0 +1,25 @@
+{
+  "projectName": "default-project",
+  "embedding": false,
+  "ignore": [
+    "oi-config.json",
+    "oi-dependency.json",
+    "/(^|[/\\])../",
+    "node_modules",
+    "*.swp",
+    ".dart_tool",
+    ".idea",
+    ".gitignore",
+    ".metadata",
+    "analysis_options.yaml",
+    "pubspec.yaml",
+    "pubspec.lock",
+    "README.md",
+    "ios/",
+    "android/",
+    "web/",
+    "macos/",
+    "windows/",
+    "build/"
+  ]
+}
