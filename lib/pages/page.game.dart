@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:four_marbles/bloc/bloc.game.dart';
 import 'package:four_marbles/bloc/events/event.game.dart';
 import 'package:four_marbles/bloc/states/state.game.dart';
+import 'package:four_marbles/widgets/widget.board.dart';
 import 'package:four_marbles/widgets/widget.colorSelector.dart';
-import 'package:four_marbles/widgets/widget.marbleSpot.dart';
 
 class GamePage extends StatefulWidget {
   const GamePage({super.key});
@@ -18,10 +18,12 @@ class GamePage extends StatefulWidget {
 class _GamePageState extends State<GamePage> {
   late GameBloc bloc;
   late Size size;
+  late ValueKey<String> identityKey;
 
   @override
   void initState() {
     bloc = GameBloc(const InitialGameState());
+    identityKey = ValueKey('Board-${DateTime.now().toIso8601String()}');
     super.initState();
   }
 
@@ -58,32 +60,10 @@ class _GamePageState extends State<GamePage> {
               if (state is GameBoardState) {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: AnimatedSwitcher(
-                    switchInCurve: Curves.easeInOut,
-                    switchOutCurve: Curves.easeInOut,
-                    duration: const Duration(milliseconds: 300),
-                    child: GridView.builder(
-                      key: ValueKey(state),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        crossAxisSpacing: 10.0,
-                        mainAxisSpacing: 10.0,
-                      ),
-                      itemBuilder: (context, index) {
-                        // Calculate the row and column index from the linear index
-                        int row = index ~/ 4;
-                        int column = index % 4;
-                        return MarbleSpotWidget(
-                          onPressed: () {
-                            bloc.add(TapGameEvent(
-                                Offset(row.toDouble(), column.toDouble())));
-                          },
-                          info: state.board.boardState[row][column],
-                        );
-                      },
-                      itemCount: 16,
-                    ),
+                  child: BoardWidget(
+                    identityKey: identityKey,
+                    board: state.board.boardState,
+                    onPressed: (offset) => addTapEvent(offset),
                   ),
                 );
               }
@@ -94,25 +74,10 @@ class _GamePageState extends State<GamePage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: GridView.builder(
-                        key: ValueKey(state),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          crossAxisSpacing: 10.0,
-                          mainAxisSpacing: 10.0,
-                        ),
-                        itemBuilder: (context, index) {
-                          // Calculate the row and column index from the linear index
-                          int row = index ~/ 4;
-                          int column = index % 4;
-                          return MarbleSpotWidget(
-                            // Disabled the tap.
-                            onPressed: () {},
-                            info: state.board.boardState[row][column],
-                          );
-                        },
-                        itemCount: 16,
+                      child: BoardWidget(
+                        identityKey: identityKey,
+                        board: state.board.boardState,
+                        onPressed: (offset) => {},
                       ),
                     ),
                     Container(
@@ -130,9 +95,13 @@ class _GamePageState extends State<GamePage> {
                                 style: const TextStyle(fontSize: 32.0),
                               ),
                               const SizedBox(height: 20.0),
-                              CircleAvatar(child: IconButton(onPressed: (){
-                                bloc.add(InitialGameEvent());
-                              }, icon: const Icon(Icons.replay),))
+                              CircleAvatar(
+                                  child: IconButton(
+                                onPressed: () {
+                                  bloc.add(InitialGameEvent());
+                                },
+                                icon: const Icon(Icons.replay),
+                              ))
                             ],
                           ),
                         ),

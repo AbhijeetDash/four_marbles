@@ -24,7 +24,7 @@ class GameBloc extends Bloc<GameEvent, GameState> {
     on<TapGameEvent>(handleTapEvent);
   }
 
-  handleGameInit(event, emit){
+  handleGameInit(event, emit) {
     // Just need to emit this to reset the UI.
     emit(const InitialGameState());
   }
@@ -65,27 +65,24 @@ class GameBloc extends Bloc<GameEvent, GameState> {
         currentColor = MarbleSlotState.black;
       }
 
-      // Then rotate the rings.
-      game = engineService.rotateInnerRing(game);
-      game = engineService.rotateOuterRing(game);
+      // Await the Timer completion to ensure all asynchronous operations are handled.
+      await Future.delayed(const Duration(seconds: 1), () async {
+        // Then rotate the rings.
+        engineService.rotateInnerRing(game);
+        engineService.rotateOuterRing(game);
 
-      await Future.delayed(const Duration(seconds: 1));
+        // Then check the win condition.
+        WinState? winResult = engineService.checkWinCondition(game);
 
-      // Then check the win condition.
-      MarbleSlotState? winResult = engineService.checkWinCondition(game);
+        // In case someone won.
+        if (winResult != WinState.none) {
+          emit(WinBoardState(board: board, win: winResult));
+          return;
+        }
 
-      // In case someone won.
-      if (winResult != null) {
-        emit(WinBoardState(
-            board: board,
-            win: (winResult == MarbleSlotState.white
-                ? WinState.white
-                : WinState.black)));
-        return;
-      }
-
-      // Emit the update state
-      emit(UpdateBoardState(board: board, color: currentColor));
+        // Emit the update state
+        emit(UpdateBoardState(board: board, color: currentColor));
+      });
     }
   }
 }

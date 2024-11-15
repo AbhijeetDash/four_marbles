@@ -3,6 +3,7 @@ import 'package:four_marbles/models/model.marble.dart';
 enum WinState {
   black,
   white,
+  draw,
   none,
 }
 

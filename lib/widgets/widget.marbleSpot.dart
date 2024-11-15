@@ -20,8 +20,8 @@ class _MarbleSpotWidgetState extends State<MarbleSpotWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 50,
-      height: 50,
+      width: 70,
+      height: 70,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(50.0),
           border: Border.all(color: Colors.white)),
@@ -32,8 +32,8 @@ class _MarbleSpotWidgetState extends State<MarbleSpotWidget> {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(40.0)),
         child: Container(
-          width: 40,
-          height: 40,
+          width: 60,
+          height: 60,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(40.0),
               color: getMarbleColor()),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:four_marbles/pages/page.game.dart';
+import 'package:four_marbles/pages/page.tutorial.dart';
 import 'package:four_marbles/widgets/widget.customButton.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -43,15 +44,12 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
             const SizedBox(height: 20),
             WidgetCustomButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const PageTutorial()));
+              },
               icon: const Icon(Icons.menu_book),
               text: 'Tutorial',
-            ),
-            const SizedBox(height: 20),
-            WidgetCustomButton(
-              onPressed: () {},
-              icon: const Icon(Icons.settings),
-              text: 'Settings',
             ),
           ],
         ),

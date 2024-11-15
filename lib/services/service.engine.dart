@@ -1,43 +1,72 @@
+import 'package:four_marbles/models/model.board.dart';
 import 'package:four_marbles/models/model.marble.dart';
 
 abstract class EngineService {
   List<List<MarbleModel>> rotateOuterRing(List<List<MarbleModel>> matrix);
   List<List<MarbleModel>> rotateInnerRing(List<List<MarbleModel>> matrix);
-  MarbleSlotState? checkWinCondition(List<List<MarbleModel>> matrix);
+  WinState checkWinCondition(List<List<MarbleModel>> matrix);
+  WinState getWinState(MarbleSlotState state);
 }
 
 class EngineServiceImpl extends EngineService {
   @override
-  MarbleSlotState? checkWinCondition(List<List<MarbleModel>> matrix) {
+  WinState getWinState(MarbleSlotState state) {
+    switch (state) {
+      case MarbleSlotState.white:
+        return WinState.white;
+      case MarbleSlotState.black:
+        return WinState.black;
+      case MarbleSlotState.empty:
+        return WinState.none;
+    }
+  }
+
+  @override
+  WinState checkWinCondition(List<List<MarbleModel>> matrix) {
+    WinState currentState = WinState.none;
+
+    // Check columns for win condition
+    for (int i = 0; i < 4; i++) {
+      if (matrix[0][i].slotState == matrix[1][i].slotState &&
+          matrix[1][i].slotState == matrix[2][i].slotState &&
+          matrix[2][i].slotState == matrix[3][i].slotState &&
+          matrix[0][i].slotState != MarbleSlotState.empty) {
+        currentState = getWinState(matrix[0][i].slotState);
+      }
+    }
+
+    // Check rows for win condition
     for (int i = 0; i < 4; i++) {
       if (matrix[i][0].slotState == matrix[i][1].slotState &&
           matrix[i][1].slotState == matrix[i][2].slotState &&
-          matrix[i][2].slotState == matrix[i][3].slotState) {
-        if (matrix[i][3].slotState != MarbleSlotState.empty) {
-          return matrix[i][3].slotState;
-        }
-      } else if (matrix[0][i].slotState == matrix[1][i].slotState &&
-          matrix[1][i].slotState == matrix[2][i].slotState &&
-          matrix[2][i].slotState == matrix[3][i].slotState) {
-        if (matrix[i][3].slotState != MarbleSlotState.empty) {
-          return matrix[i][3].slotState;
-        }
+          matrix[i][2].slotState == matrix[i][3].slotState &&
+          matrix[i][0].slotState != MarbleSlotState.empty) {
+        currentState = getWinState(matrix[i][0].slotState);
       }
     }
+
+    // Check main diagonal for win condition
     if (matrix[0][0].slotState == matrix[1][1].slotState &&
         matrix[1][1].slotState == matrix[2][2].slotState &&
-        matrix[2][2].slotState == matrix[3][3].slotState) {
-      if (matrix[3][3].slotState != MarbleSlotState.empty) {
-        return matrix[3][3].slotState;
-      }
-    } else if (matrix[0][3].slotState == matrix[1][2].slotState &&
-        matrix[1][2].slotState == matrix[2][1].slotState &&
-        matrix[2][1].slotState == matrix[3][0].slotState) {
-      if (matrix[3][0].slotState != MarbleSlotState.empty) {
-        return matrix[3][0].slotState;
-      }
+        matrix[2][2].slotState == matrix[3][3].slotState &&
+        matrix[0][0].slotState != MarbleSlotState.empty) {
+      currentState = getWinState(matrix[0][0].slotState);
     }
-    return null;
+
+    // Check anti-diagonal for win condition
+    if (matrix[0][3].slotState == matrix[1][2].slotState &&
+        matrix[1][2].slotState == matrix[2][1].slotState &&
+        matrix[2][1].slotState == matrix[3][0].slotState &&
+        matrix[0][3].slotState != MarbleSlotState.empty) {
+      currentState = getWinState(matrix[0][3].slotState);
+    }
+
+    // Check if the board is full
+    if (currentState == WinState.none) {
+      return WinState.draw;
+    }
+
+    return WinState.none; // No win condition met
   }
 
   @override
