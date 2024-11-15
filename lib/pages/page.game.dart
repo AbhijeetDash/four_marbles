@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:four_marbles/bloc/bloc.game.dart';
 import 'package:four_marbles/bloc/events/event.game.dart';
 import 'package:four_marbles/bloc/states/state.game.dart';
+import 'package:four_marbles/models/model.board.dart';
 import 'package:four_marbles/widgets/widget.board.dart';
 import 'package:four_marbles/widgets/widget.colorSelector.dart';
 
@@ -91,7 +92,7 @@ class _GamePageState extends State<GamePage> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                '${state.win.name.toUpperCase()} WON',
+                                state.win == WinState.draw?'Game Draw':'${state.win.name.toUpperCase()} WON',
                                 style: const TextStyle(fontSize: 32.0),
                               ),
                               const SizedBox(height: 20.0),

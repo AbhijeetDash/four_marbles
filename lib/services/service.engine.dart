@@ -63,6 +63,13 @@ class EngineServiceImpl extends EngineService {
 
     // Check if the board is full
     if (currentState == WinState.none) {
+      for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+          if (matrix[i][j].slotState == MarbleSlotState.empty) {
+            return WinState.none;
+          }
+        }
+      }
       return WinState.draw;
     }
 
